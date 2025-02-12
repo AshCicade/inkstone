@@ -1,53 +1,41 @@
-name: deploy
+name: inkstone deploy # 该Action的名字
 
+# on:何时触发该事件. 
 on:
-  # 每当 push 到 main 分支时触发部署
-  # Deployment is triggered whenever a push is made to the main branch.
+  # 在push或pull请求事件时触发工作流，但只针对主分支
   push:
-    branches: [main]
-  # 手动触发部署
-  # Manually trigger deployment
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # 允许从Actions选项卡手动运行此工作流
   workflow_dispatch:
 
+# 工作流运行由一个或多个jobs组成，这些job可以按顺序或并行运行
 jobs:
-  docs:
+  # 此工作流包含一个名为“build-deploy”的job。
+  build-deploy:
+    # 改job运行于什么虚拟机上
     runs-on: ubuntu-latest
 
+    # steps表示将作为job一部分执行的一系列任务
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@master # 切换分支到master
         with:
-          # “最近更新时间” 等 git 日志相关信息，需要拉取全部提交记录
-          # "Last updated time" and other git log-related information require fetching all commit records.
-          fetch-depth: 0
+         fetch-depth: 2 
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Use Node.js 20.x  #使用nodejs 20版本
+        uses: actions/setup-node@v2
         with:
-          # 选择要使用的 node 版本
-          node-version: 20
+          node-version: 20.x
 
-      # 安装依赖
-      # Install dependencies
-      - name: Install Dependencies
-        run: npm ci
+      - name: install and build #安装以来并打包，执行的是项目我们定义的命令
+        run: npm install && chmod +x node_modules/.bin/vitepress && npm run docs:build
 
-
-
-      # 运行构建脚本
-      # Run the build script
-      - name: Build VuePress site
-        run: npm run docs:build
-
-
-      # 查看 workflow 的文档来获取更多信息
-      # @see https://github.com/crazy-max/ghaction-github-pages
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v4
+      - name: deploy #部署
+        uses: peaceiris/actions-gh-pages@v3 #和上面一样，这里使用的是他人写好的插件库，作用是发布到其他仓库中或者其他分支上，想要具体了解可以在插件库中搜索
         with:
-          # 部署到 gh-pages 分支
-          target_branch: gh-pages
-          # 部署目录为 VuePress 的默认输出目录
-          build_dir: docs/.vuepress/dist
-        env:
-          # @see https://docs.github.com/cn/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          deploy_key: ${{ secrets.BLOG }} # key
+          external_repository: AshCicade/inkstone #推送到该仓库中，地址格式为github名称/仓库名
+          publish_branch: pages #分支名
+          publish_dir: docs/.vitepress/dist #要推送的内容（打包后的博客文件夹）
