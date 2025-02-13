@@ -18,10 +18,10 @@ config:
     type: features
     features:
       -
-        title: 定时任务
+        title: Quartz框架
         icon: 💻
-        details: 涵盖Quartz、XXL-JOB框架
-        link: /notes/定时任务/
+        details: 完全由Java开发的开源作业调度框架
+        link: /notes/quartz/
 ---
 
 ## 网站内容

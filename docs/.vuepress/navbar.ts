@@ -8,7 +8,11 @@ export const navbar = defineNavbarConfig([
   {
     text: '笔记',
     items: [{ text: '示例', link: '/notes/demo/README.md' },
-      { text: 'quartz', link: '/notes/quartz/README.md' }
+    {
+      text: '定时任务', items: [
+        { text: 'Quartz框架', link: '/notes/quartz/' }
+      ]
+    }
     ]
   },
 ])
