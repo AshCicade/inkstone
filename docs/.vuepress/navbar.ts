@@ -7,12 +7,23 @@ export const navbar = defineNavbarConfig([
   { text: '归档', link: '/blog/archives/' },
   {
     text: '笔记',
-    items: [{ text: '示例', link: '/notes/demo/README.md' },
-    {
-      text: '定时任务', items: [
-        { text: 'Quartz框架', link: '/notes/quartz/' }
-      ]
-    }
+    items: [
+      { 
+        text: '示例', 
+        link: '/notes/demo/README.md' 
+      },
+      {
+        text: '定时任务', 
+        items: [
+          { text: 'Quartz框架', link: '/notes/quartz/' }
+        ]
+      },
+      {
+        text: 'JSON解析库', 
+        items: [
+          { text: 'Jackson', link: '/notes/jackson/' }
+        ]
+      }
     ]
   },
 ])
